@@ -57,6 +57,16 @@ Then follow through the notebook cells to build and run experiments.
 
 ## 📈 Results
 
+| Model Type     | Params     | Accuracy | GFLOPs | Memory (MB) |
+|----------------|------------|----------|--------|-------------|
+| Baseline Base  | 291,466    | 90.02%   | 6.49   | 1084.39     |
+| NdLinear Base  | 136,648    | 87.64%   | 6.43   | 1084.39     |
+| Baseline 1M    | 291,466    | 89.68%   | 6.49   | 1084.38     |
+| NdLinear 1M    | 136,648    | 88.87%   | 6.43   | 1084.38     |
+| Baseline 5M    | 7,090,314  | 90.45%   | 35.19  | 1206.98     |
+| NdLinear 5M    | 798,900    | 88.23%   | 35.25  | 1206.98     |
+
+
 Check the notebook outputs for detailed training curves, parameter comparisons, and final model accuracy.
 
 ---
