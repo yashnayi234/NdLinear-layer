@@ -1,6 +1,6 @@
 # NdLinear-layer
 
-# NdLinear vs. Linear Layer - ML Ensemble Core
+## NdLinear vs. Linear Layer - ML Ensemble Core
 
 This project explores and compares performance between a traditional neural network model using `nn.Linear` and an enhanced variant using `NdLinear`. Built using the MNIST dataset, this notebook demonstrates model setup, training, and evaluation for multiple CNN configurations, including baseline and parameter-scaled variants.
 
@@ -65,9 +65,6 @@ Then follow through the notebook cells to build and run experiments.
 | NdLinear 1M    | 136,648    | 88.87%   | 6.43   | 1084.38     |
 | Baseline 5M    | 7,090,314  | 90.45%   | 35.19  | 1206.98     |
 | NdLinear 5M    | 798,900    | 88.23%   | 35.25  | 1206.98     |
-
-
-Check the notebook outputs for detailed training curves, parameter comparisons, and final model accuracy.
 
 ---
 
