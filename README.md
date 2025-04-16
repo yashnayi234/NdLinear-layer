@@ -21,6 +21,11 @@ Make sure the following libraries are installed:
 ```bash
 pip install torch torchvision matplotlib
 ```
+```bash
+git clone https://github.com/ensemble-core/NdLinear.git
+cd NdLinear
+pip install . 
+```
 
 You may also need `NdLinear` module if it's custom or external.
 
