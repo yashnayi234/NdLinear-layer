@@ -12,10 +12,14 @@
 .
 ├── NdLinear - CIFAR10 Ensemble AI.ipynb      # Baseline vs NdLinear on CIFAR‑10
 ├── Ensemable AI - NdLinear.ipynb             # NdLinear on Fashion‑MNIST
-├── results/
-│   ├── cifar10_comparison_results.pkl        # Pickled dict with metrics & curves
-│   └── fashion_mnist_ndlinear_results.pkl    # Pickled dict with metrics & curves
-└── ndlinear/                                 # Custom NdLinear layer implementation
+├── Visualization/
+│   ├── CIFAR10 Training and Validation Accuracy.png
+│   ├── CIFAR10 Training and Validation loss.png
+│   ├── Comparison of NNLinear and NdLinear.png
+│   ├── FashionMNIST - Performance.png
+│   ├── FashionMNIST - Training and Validation Loss.png
+│   └── FashionMNIST Training and Validation Accuracy.png
+└── ndlinear.py                                 # Custom NdLinear layer implementation
 ```
 
 ---
