@@ -1,73 +1,142 @@
-# NdLinear-layer
+![ensemble_logo](https://github.com/user-attachments/assets/ddac6b20-98a7-44c9-a912-35678a26da9b)
 
-## NdLinear vs. Linear Layer - ML Ensemble Core
+# NdLinear CNN Experiments on CIFAR‑10 & Fashion‑MNIST 
 
-This project explores and compares performance between a traditional neural network model using `nn.Linear` and an enhanced variant using `NdLinear`. Built using the MNIST dataset, this notebook demonstrates model setup, training, and evaluation for multiple CNN configurations, including baseline and parameter-scaled variants.
-
-## 📚 Overview
-
-The notebook implements:
-- Loading and preprocessing of the MNIST dataset.
-- Two primary model types:
-  - **Baseline CNN** using `nn.Linear`
-  - **NdLinear CNN** replacing `nn.Linear` layers with `NdLinear`
-- Experiments across models with different parameter scales (Base, 1M, 5M).
-- Comparative analysis based on accuracy and training dynamics.
-
-## 🛠️ Installation
-
-Make sure the following libraries are installed:
-
-```bash
-pip install torch torchvision matplotlib
-```
-```bash
-git clone https://github.com/ensemble-core/NdLinear.git
-cd NdLinear
-pip install . 
-```
-
-You may also need `NdLinear` module if it's custom or external.
-
-## 🚀 Usage
-
-Run the notebook step-by-step to:
-
-1. **Load and preprocess** MNIST data.
-2. **Define CNN architectures** using `nn.Conv2d` and either `nn.Linear` or `NdLinear`.
-3. **Train** and evaluate models.
-4. **Compare** performance metrics (accuracy, loss, parameters).
-
-You can start with:
-
-```python
-# Load and preprocess
-from torchvision import datasets, transforms
-```
-
-Then follow through the notebook cells to build and run experiments.
-
-## 📊 Model Variants
-
-| Model Version | Description                      | Approx. Parameters |
-|---------------|----------------------------------|--------------------|
-| Base Model    | CNN with standard layers         | ~XXX K             |
-| 1M Model      | Enhanced with larger dense layers| ~1 Million         |
-| 5M Model      | Further scaled dense layers      | ~5 Million         |
-
-## 📈 Results
-
-| Model Type     | Params     | Accuracy | GFLOPs | Memory (MB) |
-|----------------|------------|----------|--------|-------------|
-| Baseline Base  | 291,466    | 90.02%   | 6.49   | 1084.39     |
-| NdLinear Base  | 136,648    | 87.64%   | 6.43   | 1084.39     |
-| Baseline 1M    | 291,466    | 89.68%   | 6.49   | 1084.38     |
-| NdLinear 1M    | 136,648    | 88.87%   | 6.43   | 1084.38     |
-| Baseline 5M    | 7,090,314  | 90.45%   | 35.19  | 1206.98     |
-| NdLinear 5M    | 798,900    | 88.23%   | 35.25  | 1206.98     |
+> **Goal**   Evaluate the parameter‑efficient **NdLinear** layer against a standard convolutional baseline on two vision datasets and measure the trade‑offs in accuracy, memory, and speed.
 
 ---
 
-## 📂 Files
+## 1  Project Structure
 
-- `NdLinear_ML-Ensemble-core.ipynb`: Main experiment notebook.
+```
+.
+├── NdLinear - CIFAR10 Ensemble AI.ipynb      # Baseline vs NdLinear on CIFAR‑10
+├── Ensemable AI - NdLinear.ipynb             # NdLinear on Fashion‑MNIST
+├── results/
+│   ├── cifar10_comparison_results.pkl        # Pickled dict with metrics & curves
+│   └── fashion_mnist_ndlinear_results.pkl    # Pickled dict with metrics & curves
+└── ndlinear/                                 # Custom NdLinear layer implementation
+```
+
+---
+
+## 2  Setup
+
+```bash
+# Clone and create an env (conda or venv)
+conda create -n ndlinear python=3.10 -y
+conda activate ndlinear
+
+# Core dependencies
+pip install torch torchvision tqdm matplotlib psutil
+
+# (Optional) Install the NdLinear layer if published on PyPI
+pip install ndlinear
+```
+
+> **Hardware used:** NVIDIA T4 GPU (Google Colab) for all runs.
+
+---
+
+## 3  Running the Experiments
+
+| Task                          | Notebook                               | Quick start                                 |
+| ----------------------------- | -------------------------------------- | ------------------------------------------- |
+| CIFAR‑10 baseline vs NdLinear | `NdLinear - CIFAR10 Ensemble AI.ipynb` | Run all cells, \~25 epochs (≈ 10 min on T4) |
+| Fashion‑MNIST with NdLinear   | `Ensemable AI - NdLinear.ipynb`        | Run all cells, \~15 epochs (≈ 3 min on T4)  |
+
+Each notebook saves a **`results/*.pkl`** file containing loss/accuracy curves, epoch‑level timing, and memory usage so you can reload and plot without re‑training.
+
+---
+
+## 4  Model Architectures
+
+| Layer              | Baseline CNN                           | NdLinear CNN                                                                      |
+| ------------------ | -------------------------------------- | --------------------------------------------------------------------------------- |
+| Conv/Linear blocks | Standard `Conv2d` + `ReLU` + `MaxPool` | Replace all `Conv2d` layers with **`NdLinear`** (rank‑decomposed linear operator) |
+| Classifier head    | 2 × `Linear` + `ReLU`                  | Same head                                                                         |
+| Params             | **620 k**                              | **104 k**                                                                         |
+
+NdLinear factorises spatial kernels into a low‑rank tensor product, dramatically cutting weights while retaining expressive power.
+
+---
+
+## 5  Results
+
+### 5.1  CIFAR‑10 (10 classes, 32×32 RGB)
+
+| Metric                     | Baseline |    NdLinear | Δ                    |
+| -------------------------- | -------: | ----------: | -------------------- |
+| **Params**                 |  620 362 |     104 094 | **–83 %** ↓          |
+| **Best acc.**              |  78.73 % | **80.24 %** | **+1.51 pp** ↑       |
+| **Avg epoch time**         |  10.60 s |     10.62 s | +0.02 s (negligible) |
+| **Avg GPU mem**            |  0.04 MB | **0.01 MB** | –0.03 MB ↓           |
+| **Epochs to 90 % of best** |    **6** |           7 | –1 epoch slower      |
+
+<details>
+<summary>📈 Training curves & radar plot (generated by notebook)</summary>
+
+The notebook renders:
+
+### FashionMNIST
+![image](https://github.com/user-attachments/assets/904be439-79b3-403e-a1df-73e1ee5cd3b1)
+![image](https://github.com/user-attachments/assets/b399aa2b-f979-4608-a0b1-66d5ff51975b)
+
+### CIFAR10
+![image](https://github.com/user-attachments/assets/17c9685c-9663-4d6c-9c61-4ed84f2e1fb3)
+![image](https://github.com/user-attachments/assets/f79b05bf-7cfa-44f0-b703-069aa0cb0d50)
+
+
+</details>
+
+### 5.2  Fashion‑MNIST (10 classes, 28×28 gray)
+
+| Metric                     |    NdLinear |
+| -------------------------- | ----------: |
+| **Params**                 |     128 154 |
+| **Best acc.**              | **92.16 %** |
+| **Avg epoch time**         |      7.28 s |
+| **Avg GPU mem**            |     0.04 MB |
+| **Epochs to 90 % of best** |       **1** |
+
+*A baseline was not rerun for Fashion‑MNIST; literature baselines at similar capacity typically score ∼91 %.*
+
+---
+
+## 6  Key Takeaways
+
+1. **Parameter efficiency:** NdLinear slashes parameters by **>80 %** on CIFAR‑10 with a small *increase* in accuracy.
+2. **Memory footprint:** Thanks to fewer weights, peak GPU memory drops slightly; useful for edge devices.
+3. **Speed:** Compute cost is almost unchanged (≤ 0.02 s per epoch difference on T4).
+4. **Convergence:** NdLinear may require one extra epoch to reach steady accuracy but still converges rapidly.
+5. **Generalisation:** High 92 %+ accuracy on Fashion‑MNIST demonstrates robustness across datasets.
+
+---
+
+## 7  Reproducing & Extending
+
+```python
+# Example: Load saved metrics without retraining
+import pickle
+with open("results/cifar10_comparison_results.pkl", "rb") as f:
+    data = pickle.load(f)
+print(data.keys())  # train_losses, test_accs, ...
+```
+
+Feel free to:
+
+* Swap in **ResNet** or **MobileNet** backbones to test NdLinear at scale.
+* Tune `rank` inside NdLinear for an accuracy‑vs‑parameters Pareto sweep.
+* Add pruning or quantisation for further compression.
+
+---
+
+## 8  References
+
+* *NdLinear: Low‑Rank Linear Layer for Efficient Vision Models* – original paper & code<br>
+* **PyTorch** & **Torchvision** for training loops<br>
+* **Fashion‑MNIST** & **CIFAR‑10** datasets 
+---
+
+> © 2025 Yash Nayi  Ensemble AI
+> Special Thanks to Alex anf Zach
